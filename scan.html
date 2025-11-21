@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NutriScan AI – Instant Food Scanner</title>
+  <link rel="stylesheet" href="scan.css" />
+</head>
+<body>
+
+  <!-- Popup -->
+  <div id="popup" class="popup-overlay">
+    <div class="popup-card">
+      <h3>Add This Meal?</h3>
+      <p id="popupText">This will add <strong>0 kcal</strong> to your daily total.</p>
+      <div class="popup-actions">
+        <button onclick="closePopup()" class="btn-secondary">Cancel</button>
+        <button onclick="confirmAdd()" class="btn-primary">Yes, Add</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="container flex">
+      <div class="logo">NutriScan AI</div>
+      <nav>
+        <a href="#home">Home</a>
+        <a href="#scan">Scan Food</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section id="home" class="hero">
+    <div class="container">
+      <h1>Know Your Meal in <span class="highlight">0.5 Seconds</span></h1>
+      <p>Just snap a photo → AI instantly detects food, calories & macros</p>
+      <button class="btn-large" onclick="scrollToScan()">Start Scanning Now</button>
+
+      <div class="daily-card">
+        <h3>Today's Progress</h3>
+        <div class="progress-text">
+          <span>Eaten: <strong id="eatenLabel">0</strong> kcal</span>
+          <span>Goal: <strong id="goalLabel">1800</strong> kcal</span>
+        </div>
+        <div class="progress-bar">
+          <div id="progressFill" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Scanner Section -->
+  <section id="scan" class="scanner-section">
+    <div class="container">
+      <h2>Scan Your Meal</h2>
+      <p>Snap a photo or upload an image · Get instant nutrition facts</p>
+
+      <div class="scanner-grid">
+        <!-- Upload Card -->
+        <div class="upload-card">
+          <h3>Capture or Upload Food Photo</h3>
+          
+          <div class="upload-box" onclick="document.getElementById('fileInput').click()">
+            <input type="file" id="fileInput" accept="image/*" onchange="previewImage(event)" hidden />
+            <input type="file" id="cameraInput" accept="image/*" capture="environment" onchange="previewImage(event)" hidden />
+            <div id="uploadPlaceholder">
+              <span>📸</span>
+              <p>Tap to upload or use camera</p>
+            </div>
+            <img id="preview" class="preview-img" alt="Food preview" />
+          </div>
+
+          <div class="upload-options" style="display: flex; gap: 1rem; margin: 1rem 0;">
+            <button class="btn-secondary" onclick="document.getElementById('fileInput').click()">Choose File</button>
+            <button class="btn-primary" onclick="document.getElementById('cameraInput').click()">Use Camera</button>
+          </div>
+
+          <div class="portion-control">
+            <label>Portion Size</label>
+            <select id="portionSelect">
+              <option value="0.75">Small</option>
+              <option value="1" selected>Regular</option>
+              <option value="1.5">Large</option>
+              <option value="2">Extra Large</option>
+            </select>
+          </div>
+
+          <button id="scanBtn" class="btn-scan" onclick="scanWithAI()">
+            <span id="scanText">Scan with AI</span>
+            <span id="loader" class="loader hidden">Analyzing...</span>
+          </button>
+        </div>
+
+        <!-- Result Card -->
+        <div class="result-card">
+          <h3>AI Analysis Result</h3>
+          <div id="resultArea">
+            <div class="placeholder">
+              <p>Your food analysis will appear here instantly after scanning.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="about-section">
+    <div class="container">
+      <h2>About NutriScan AI</h2>
+      <p class="section-subtitle">
+        Your personal AI-powered nutrition assistant built for real-life healthy eating.
+      </p>
+
+      <div class="about-grid">
+        <div class="about-text">
+          <h3>Smart Food Recognition</h3>
+          <p>Our advanced AI instantly identifies Indian and global foods from a single photo — no manual selection needed.</p>
+
+          <h3>Accurate Nutrition Insights</h3>
+          <p>Get precise calorie counts, macros breakdown, and personalized recommendations based on your daily goal and time of eating.</p>
+
+          <h3>Made for Indian Diets</h3>
+          <p>Specially trained on popular Indian meals like Idli, Dosa, Paneer, Samosa, Chapati, Rice and more — because health starts at home.</p>
+
+          <h3>Student Innovation Project</h3>
+          <p>Developed as a final-year college project with passion and purpose — to make nutrition simple, fast, and accessible to everyone.</p>
+        </div>
+        <div class="about-image">
+          <div style="background:#ecfdf5; border-radius:20px; padding:2rem; text-align:center;">
+            <h3 style="color:#10b981; font-size:2.5rem; margin:0;">Future Ready</h3>
+            <p style="font-size:1.2rem; color:#166534; margin:1rem 0;">This prototype will soon use real AI models (YOLOv9 + Gemini Vision)</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align:center; margin-top:3rem;">
+        <p><strong>Created with love by:</strong><br>
+        <span style="font-size:1.3rem; color:#10b981;">Ajay Meena</span> & 
+        <span style="font-size:1.3rem; color:#10b981;">Dakshya Mangrolia</span><br>
+        <em>Under the guidance of Dr. Gulshon Soni Sir</em>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="contact-section">
+    <div class="container">
+      <h2>Get in Touch</h2>
+      <p class="section-subtitle">We'd love to hear from you! Questions, feedback, or collaboration?</p>
+
+      <div class="contact-grid">
+        <div class="contact-form">
+          <div class="form-group">
+            <label>Your Name</label>
+            <input type="text" placeholder="Enter your name" />
+          </div>
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" placeholder="your@email.com" />
+          </div>
+          <div class="form-group">
+            <label>Message</label>
+            <textarea rows="5" placeholder="Write your message here..."></textarea>
+          </div>
+          <button class="btn-large" style="width:100%; margin-top:1rem;" onclick="alert('Thank you! Message received (demo mode)')">
+            Send Message
+          </button>
+        </div>
+
+        <div class="contact-info">
+          <h3>Contact Details</h3>
+          <div class="info-item">
+            <strong>Email:</strong><br>
+            <a href="mailto:nutriscan.ai@gmail.com">nutriscan.ai@gmail.com</a>
+          </div>
+          <div class="info-item">
+            <strong>Project By:</strong><br>
+            Ajay Meena & Dakshya Mangrolia<br>
+            B.Tech 1st Year Students
+          </div>
+          <div class="info-item">
+            <strong>College:</strong><br>
+            Madhav Institute of Technology & Science, Gwalior(MITS)<br>
+            (Under guidance of Dr. Gulshon Soni)
+          </div>
+          <div class="info-item">
+            <strong>Version:</strong> Prototype v2.0 (2025)
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer – Professional Multi-Column Design -->
+  <footer class="footer-section">
+    <div class="container">
+      <div class="footer-grid">
+        <!-- Column 1: Branding -->
+        <div class="footer-column">
+          <div class="logo" style="font-size: 2rem; margin-bottom: 0.5rem;">NutriScan AI</div>
+          <p style="color: #d1fae5; margin-bottom: 1rem; font-size: 1rem;">
+            Empowering healthier choices with instant AI food insights – scan, track, thrive.
+          </p>
+          <div style="display: flex; gap: 1rem;">
+            <a href="#" style="color: #86efac; font-size: 1.5rem;">📧</a>
+            <a href="#" style="color: #86efac; font-size: 1.5rem;">📱</a>
+            <a href="#" style="color: #86efac; font-size: 1.5rem;">🔗</a>
+          </div>
+        </div>
+
+        <!-- Column 2: Quick Links -->
+        <div class="footer-column">
+          <h4 style="color: #ecfdf5; margin-bottom: 1rem;">Quick Links</h4>
+          <ul style="list-style: none; padding: 0;">
+            <li><a href="#home" style="color: #d1fae5; text-decoration: none; display: block; margin-bottom: 0.5rem;">Home</a></li>
+            <li><a href="#scan" style="color: #d1fae5; text-decoration: none; display: block; margin-bottom: 0.5rem;">Scan Food</a></li>
+            <li><a href="#about" style="color: #d1fae5; text-decoration: none; display: block; margin-bottom: 0.5rem;">About Us</a></li>
+            <li><a href="#contact" style="color: #d1fae5; text-decoration: none; display: block; margin-bottom: 0.5rem;">Contact</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3: Credits & Contact -->
+        <div class="footer-column">
+          <h4 style="color: #ecfdf5; margin-bottom: 1rem;">Our Team</h4>
+          <p style="color: #a7f3d0; margin-bottom: 0.5rem; font-weight: 600;">
+            Created by:
+          </p>
+          <p style="color: #ecfdf5; margin-bottom: 1rem; font-size: 1.1rem;">
+            Ajay Meena & Dakshya Mangrolia
+          </p>
+          <p style="color: #a7f3d0; margin-bottom: 0.5rem; font-weight: 600;">
+            Guided by:
+          </p>
+          <p style="color: #ecfdf5; font-weight: 700; font-size: 1.1rem;">
+            Dr. Gulshon Soni Sir
+          </p>
+          <p style="color: #d1fae5; font-size: 0.9rem; margin-top: 1rem;">
+            B.Tech 1st semester Project<br>
+           Madhav Institute of Technology & Science, Gwalior(MITS)
+          </p>
+        </div>
+      </div>
+      <!-- Bottom Bar -->
+      <div class="footer-bottom">
+        <p style="color: #a7f3d0; text-align: center; margin: 0; font-size: 0.95rem;">
+          © 2025 NutriScan AI — Building a Healthier Tomorrow | Made with ❤️ for Nutrition Lovers
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="scan.js"></script>
+</body>
+</html>
